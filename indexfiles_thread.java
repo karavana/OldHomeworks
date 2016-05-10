@@ -59,6 +59,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /** Index all text files under a directory.
  * <p>
@@ -70,6 +72,7 @@ public class IndexFiles {
   private static IndexWriter writer;
   private static HashMap<String, Float> termFrequencies;
   private static HashMap<String, Float> invertedDocumentFrequencies;
+  private static ExecutorService executor = Executors.newFixedThreadPool(4);
   private IndexFiles() {}
 
   /** Index all text files under a directory. */
@@ -164,7 +167,7 @@ public class IndexFiles {
       writer = new IndexWriter(dir, iwc); //writes to files
       //IndexWriter writer = new IndexWriter(ramDir, iwc); //writes to RAM
       indexDocs(writer, docDir);
-
+	 
       // NOTE: if you want to maximize search performance,
       // you can optionally call forceMerge here.  This can be
       // a terribly costly operation, so generally it's only
@@ -172,7 +175,8 @@ public class IndexFiles {
       // you're done adding documents to it):
       //
       // writer.forceMerge(1);
-
+	  while (!executor.isTerminated()) { // Wait until all the doc threads finish adding docs to index
+      }
       writer.close();
       
       Date end = new Date();
@@ -331,9 +335,9 @@ public class IndexFiles {
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
           try {
-            Thread docAdder = new indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
-			docAdder.start();
-			docAdder.join();
+			
+            Runnable docAdder = new indexDoc(writer, file, attrs.lastModifiedTime().toMillis());
+			executor.execute(docAdder);
           } catch (IOException ignore) {
             // don't index files that can't be read.
           }
@@ -341,9 +345,8 @@ public class IndexFiles {
         }
       });
     } else {
-         Thread docAdder = new indexDoc(writer, path, Files.getLastModifiedTime(path).toMillis());
-		 docAdder.start();
-		 docAdder.join();
+         Runnable docAdder = new indexDoc(writer, path, Files.getLastModifiedTime(path).toMillis());
+		 executor.execute(docAdder);
     }
   }
 
