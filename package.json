@@ -1,7 +1,0 @@
-{
-    "name": "learning-express-cluster",
-    "version": "1.0.0",
-    "dependencies": {
-        "express": "^4"
-    }
-}
