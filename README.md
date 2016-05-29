@@ -1,2 +1,2 @@
 # whydoe
-new thang
+this projects is for nerds..
