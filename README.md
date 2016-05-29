@@ -1,2 +1,2 @@
 # whydoe
-this projects is for nerds..
+this project is for nerds..
