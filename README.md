@@ -1,2 +1,3 @@
-# whydoe
-new thang
+Note to future-self:
+I use branches as directories
+See commit comments to get an info on how to get a code working in here...
