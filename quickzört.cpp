@@ -80,16 +80,16 @@ int main()
     int i1 = 0;
 
     while(i1 != INPUT_SIZE){
-    if(input[i1].first != input[i1+1].first){
-        Points.push_back(std::make_pair(i2,input[i1].second));
-        i1++;
-        i2--;
-    }
-    else{
-        Points.push_back(std::make_pair(i2,input[i1].second));
-        i1++;
-    }
-}
+       if(input[i1].first != input[i1+1].first){
+           Points.push_back(std::make_pair(i2,input[i1].second));
+           i1++;
+           i2--;
+       }
+       else{
+           Points.push_back(std::make_pair(i2,input[i1].second));
+           i1++;
+       }
+   }
 
     std::vector< pair<int,int> >::iterator k;
     std::vector< pair<int,int> >::iterator l;
